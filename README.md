@@ -23,7 +23,7 @@ Starts the server on port 8080.
 ?- rest_server(8080).
 ```
 
-Access the running server with a POST request on http://localhost:8080/minimax with a tic tac toe board as JSON value.
+Access the running server with a http POST request on localhost:8080/minimax with a tic tac toe board as JSON value.
 ```
 Request JSON:
 { "board":["o","n","n","n","n","n","n","n","n"]}
