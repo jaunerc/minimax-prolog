@@ -41,33 +41,13 @@ eval_board(Board, Value) :-
     full_board(Board),
     Value is 0.
 
+% change_max_min(+MinOrMax, TheOther)
+% Changes the MinMax atom.
+change_max_min(max, min).
+change_max_min(min, max).
 
-
-best_move(max, [], [], -2).
-best_move(min, [], [], 2).
-best_move(MinMax, [Move | RestMoves], BestMove, BestValue) :-
-    eval_board(Move, Value),
-    best_move(MinMax, RestMoves, CurrentBestM, CurrentBestV),
-	compare_moves(MinMax, Move, Value, CurrentBestM, CurrentBestV, BestMove, BestValue).
-best_move(max, [Move | RestMoves], BestMove, BestValue) :-
-	best_move(max, RestMoves, CurrentBestM, CurrentBestV),
-	minimax_step(min, Move, _, BottomBestV),
-	(BottomBestV > CurrentBestV ->
-    BestMove = Move,
-    BestValue is BottomBestV
-    ;
-    BestMove = CurrentBestM,
-    BestValue is CurrentBestV).
-best_move(min, [Move | RestMoves], BestMove, BestValue) :-
-	best_move(min, RestMoves, CurrentBestM, CurrentBestV),
-	minimax_step(max, Move, _, BottomBestV),
-	(BottomBestV < CurrentBestV ->
-    BestMove = Move,
-    BestValue is BottomBestV
-    ;
-    BestMove = CurrentBestM,
-    BestValue is CurrentBestV).
-
+% compare_moves(+MinMax, +MoveA, +ValueA, +MoveB, +ValueB, -BetterMove, -BetterValue)
+% Chooses the move with the higher value.
 compare_moves(max, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
 	ValueA >= ValueB.
 compare_moves(max, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
@@ -77,15 +57,33 @@ compare_moves(min, MoveA, ValueA, _, ValueB, MoveA, ValueA) :-
 compare_moves(min, _, ValueA, MoveB, ValueB, MoveB, ValueB) :-
 	ValueA > ValueB.
 
+% best_move(+MinMax, +AllMoves, -BestMove, -BestValue)
+% Chooses the next move.
+best_move(max, [], [], -2).
+best_move(min, [], [], 2).
+best_move(MinMax, [Move | RestMoves], BestMove, BestValue) :-
+    eval_board(Move, Value),
+    best_move(MinMax, RestMoves, CurrentBestM, CurrentBestV),
+	compare_moves(MinMax, Move, Value, CurrentBestM, CurrentBestV, BestMove, BestValue).
+best_move(MinMax, [Move | RestMoves], BestMove, BestValue) :-
+	best_move(MinMax, RestMoves, CurrentBestM, CurrentBestV),
+	change_max_min(MinMax, Other),
+	minimax_step(Other, Move, _, BottomBestV),
+	compare_moves(MinMax, Move, BottomBestV, CurrentBestM, CurrentBestV, BestMove, BestValue).
 
+% player_color(MinMax, Color)
+% Matches the player color based on the MinMax atom.
+player_color(max, x).
+player_color(min, o).
 
+% minimax_step(+MinMax, +Board, -BestMove, -BestValue)
+% Chooses the best possible move for the current board.
+minimax_step(MinMax, Board, BestMove, BestValue) :-
+	player_color(MinMax, Color),
+	all_possible_moves(Color, Board, AllMoves),
+    best_move(MinMax, AllMoves, BestMove, BestValue).
 
-minimax_step(max, Board, BestMove, BestValue) :-
-    all_possible_moves(x, Board, AllMoves),
-    best_move(max, AllMoves, BestMove, BestValue).
-minimax_step(min, Board, BestMove, BestValue) :-
-    all_possible_moves(o, Board, AllMoves),
-    best_move(min, AllMoves, BestMove, BestValue).
-
+% minimax(+Board, -BestMove)
+% Matches the next move based on the current board.
 minimax(Board, BestMove) :-
 	minimax_step(max, Board, BestMove, _).

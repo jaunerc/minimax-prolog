@@ -22,5 +22,5 @@ handle_api(Request) :-
 		
 solve(Query, Solution) :-
 	json_to_prolog(Query, tictactoe(Board)),
-	test(max, Board, BestMove, _),
+	minimax(Board, BestMove),
 	prolog_to_json(tictactoe(BestMove), Solution).
