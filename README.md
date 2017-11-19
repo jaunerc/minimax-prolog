@@ -1,8 +1,8 @@
 # minimax-prolog
-A simple minimax implementation in SWI Prolog for Tic Tac Toe.
+A simple minimax implementation in SWI Prolog for Tic Tac Toe. There is also a ui client to play against this implementation under https://github.com/jaunerc/tictactoe_client
 
 ## Minimax
-The minimax algorithm can be used for several games to implement a computer opponent. The file minimax.pl contributes a predicate minimax/2. Which chooses the next best move to play by a given tic tac toe board. Notice this implementation is pretty basic and NOT fully tested. It should choose the best possible move.
+The minimax algorithm can be used for several games to implement a computer opponent. The file minimax.pl contributes a predicate minimax/2. Which chooses the next best move to play by a given tic tac toe board. Notice this implementation is pretty basic. It should choose the best possible move.
 
 By example the following statement matches NextMove with the chosen move for the given board.
 ```Prolog
